@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package workflow;
+
+message Step {
+  string name = 1;
+  string service = 2;
+  repeated string depends_on = 3;
+  int32 max_retries = 4;
+}
+
+message Workflow {
+  string id = 1;
+  string name = 2;
+  repeated Step steps = 3;
+}
