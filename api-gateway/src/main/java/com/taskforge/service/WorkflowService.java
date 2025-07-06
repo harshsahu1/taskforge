@@ -15,11 +15,12 @@ import com.taskforge.entity.WorkflowEntity;
 import com.taskforge.entity.WorkflowStatus;
 import com.taskforge.repository.WorkflowRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import workflow.WorkflowOuterClass.Workflow;
 
 @Service
 public class WorkflowService {
-    
+
     @Autowired
     private WorkflowRepository workflowRepo;
 
@@ -48,5 +49,18 @@ public class WorkflowService {
 
         entity.setSteps(stepEntities);
         workflowRepo.save(entity);
+    }
+
+    public WorkflowEntity getWorkflow(UUID id) {
+        return workflowRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Workflow not found with id: " + id));
+    }
+
+    public List<UUID> getFailedWorkflowIds() {
+        return workflowRepo.findByStatus("FAILED")
+                .stream()
+                .map(WorkflowEntity::getId)
+                .collect(Collectors.toList());
+
     }
 }
